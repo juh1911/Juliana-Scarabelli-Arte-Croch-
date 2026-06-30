@@ -100,6 +100,7 @@ function AdminProduto() {
     const file = e.target.files[0]
     if (!file) return
 
+    // Validações
     if (!file.type.startsWith('image/')) {
       toast.error('Selecione uma imagem válida')
       return
@@ -113,9 +114,11 @@ function AdminProduto() {
     setUploadando(true)
 
     try {
+      // Preview local
       const previewUrl = URL.createObjectURL(file)
       setImagemPreview(previewUrl)
 
+      // Upload para o Supabase Storage
       const fileExt = file.name.split('.').pop()
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
       const filePath = `produtos/${fileName}`
@@ -125,21 +128,23 @@ function AdminProduto() {
         .upload(filePath, file)
 
       if (uploadError) {
-        toast.error('Erro ao fazer upload')
+        console.error('Erro no upload:', uploadError)
+        toast.error(`Erro ao fazer upload: ${uploadError.message}`)
         setImagemPreview(null)
         setUploadando(false)
         return
       }
 
+      // Pegar URL pública
       const { data: publicUrlData } = supabase.storage
         .from('produtos-imagens')
         .getPublicUrl(filePath)
 
       setFormData(prev => ({ ...prev, imagem: publicUrlData.publicUrl }))
-      toast.success('Imagem enviada!')
+      toast.success('Imagem enviada com sucesso!')
 
     } catch (error) {
-      console.error(error)
+      console.error('Erro:', error)
       toast.error('Erro ao processar imagem')
     } finally {
       setUploadando(false)
@@ -184,15 +189,22 @@ function AdminProduto() {
     let result
     if (isEditando) {
       result = await supabase.from('produtos').update(produtoData).eq('id', id)
-      if (!result.error) toast.success('Produto atualizado!')
-      else toast.error(`Erro: ${result.error.message}`)
+      if (!result.error) {
+        toast.success('Produto atualizado!')
+        navigate('/admin')
+      } else {
+        toast.error(`Erro: ${result.error.message}`)
+      }
     } else {
       result = await supabase.from('produtos').insert([produtoData])
-      if (!result.error) toast.success('Produto criado!')
-      else toast.error(`Erro: ${result.error.message}`)
+      if (!result.error) {
+        toast.success('Produto criado!')
+        navigate('/admin')
+      } else {
+        toast.error(`Erro: ${result.error.message}`)
+      }
     }
 
-    if (!result.error) navigate('/admin')
     setLoading(false)
   }
 
@@ -200,9 +212,12 @@ function AdminProduto() {
     if (!window.confirm('Excluir permanentemente?')) return
     setLoading(true)
     const { error } = await supabase.from('produtos').delete().eq('id', id)
-    if (error) toast.error(`Erro: ${error.message}`)
-    else toast.success('Produto excluído!')
-    if (!error) navigate('/admin')
+    if (error) {
+      toast.error(`Erro: ${error.message}`)
+    } else {
+      toast.success('Produto excluído!')
+      navigate('/admin')
+    }
     setLoading(false)
   }
 
@@ -227,7 +242,7 @@ function AdminProduto() {
 
           <form onSubmit={handleSubmit} className="produto-form">
             <div className="form-grid">
-              {/* COLUDA ESQUERDA - IMAGEM */}
+              {/* COLUNA ESQUERDA - IMAGEM */}
               <div className="form-image-section">
                 <label className="form-label">Imagem</label>
                 <div className="image-upload-area">
@@ -242,7 +257,12 @@ function AdminProduto() {
                     <label className="image-placeholder">
                       <Upload size={40} />
                       <span>Clique para selecionar</span>
-                      <input type="file" accept="image/*" onChange={handleImageUpload} className="image-input" />
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleImageUpload} 
+                        className="image-input" 
+                      />
                     </label>
                   )}
                   <button 
@@ -261,17 +281,35 @@ function AdminProduto() {
               <div className="form-fields-section">
                 <div className="form-field">
                   <label className="form-label">Nome</label>
-                  <input type="text" name="nome" value={formData.nome} onChange={handleChange} required className="form-input" />
+                  <input 
+                    type="text" 
+                    name="nome" 
+                    value={formData.nome} 
+                    onChange={handleChange} 
+                    required 
+                    className="form-input" 
+                  />
                 </div>
 
                 <div className="form-field">
                   <label className="form-label">Slug</label>
-                  <input type="text" name="slug" value={formData.slug} onChange={handleChange} className="form-input" />
+                  <input 
+                    type="text" 
+                    name="slug" 
+                    value={formData.slug} 
+                    onChange={handleChange} 
+                    className="form-input" 
+                  />
                 </div>
 
                 <div className="form-field">
                   <label className="form-label">Categoria</label>
-                  <select name="categoria" value={formData.categoria} onChange={handleChange} className="form-select">
+                  <select 
+                    name="categoria" 
+                    value={formData.categoria} 
+                    onChange={handleChange} 
+                    className="form-select"
+                  >
                     {categorias.map(cat => (
                       <option key={cat} value={cat}>{cat}</option>
                     ))}
@@ -281,22 +319,50 @@ function AdminProduto() {
                 <div className="form-row">
                   <div className="form-field">
                     <label className="form-label">Preço (R$)</label>
-                    <input type="number" name="preco" value={formData.preco} onChange={handleChange} required step="0.01" className="form-input" />
+                    <input 
+                      type="number" 
+                      name="preco" 
+                      value={formData.preco} 
+                      onChange={handleChange} 
+                      required 
+                      step="0.01" 
+                      className="form-input" 
+                    />
                   </div>
                   <div className="form-field">
                     <label className="form-label">Preço Original</label>
-                    <input type="number" name="preco_original" value={formData.preco_original} onChange={handleChange} step="0.01" className="form-input" />
+                    <input 
+                      type="number" 
+                      name="preco_original" 
+                      value={formData.preco_original} 
+                      onChange={handleChange} 
+                      step="0.01" 
+                      className="form-input" 
+                    />
                   </div>
                 </div>
 
                 <div className="form-row">
                   <div className="form-field">
                     <label className="form-label">Estoque</label>
-                    <input type="number" name="estoque" value={formData.estoque} onChange={handleChange} required min="0" className="form-input" />
+                    <input 
+                      type="number" 
+                      name="estoque" 
+                      value={formData.estoque} 
+                      onChange={handleChange} 
+                      required 
+                      min="0" 
+                      className="form-input" 
+                    />
                   </div>
                   <div className="form-field checkbox-field">
                     <label className="checkbox-label">
-                      <input type="checkbox" name="em_promocao" checked={formData.em_promocao} onChange={handleChange} />
+                      <input 
+                        type="checkbox" 
+                        name="em_promocao" 
+                        checked={formData.em_promocao} 
+                        onChange={handleChange} 
+                      />
                       Em promoção
                     </label>
                   </div>
@@ -304,19 +370,40 @@ function AdminProduto() {
 
                 <div className="form-field full-width">
                   <label className="form-label">Descrição</label>
-                  <textarea name="descricao" value={formData.descricao} onChange={handleChange} rows="4" className="form-textarea" />
+                  <textarea 
+                    name="descricao" 
+                    value={formData.descricao} 
+                    onChange={handleChange} 
+                    rows="4" 
+                    className="form-textarea" 
+                  />
                 </div>
               </div>
             </div>
 
             <div className="form-actions">
               {isEditando && (
-                <button type="button" className="delete-btn" onClick={handleDelete} disabled={loading}>
+                <button 
+                  type="button" 
+                  className="delete-btn" 
+                  onClick={handleDelete} 
+                  disabled={loading}
+                >
                   <Trash2 size={16} /> Excluir
                 </button>
               )}
-              <button type="button" className="cancel-btn" onClick={() => navigate('/admin')}>Cancelar</button>
-              <button type="submit" className="save-btn" disabled={loading}>
+              <button 
+                type="button" 
+                className="cancel-btn" 
+                onClick={() => navigate('/admin')}
+              >
+                Cancelar
+              </button>
+              <button 
+                type="submit" 
+                className="save-btn" 
+                disabled={loading}
+              >
                 <Save size={16} /> {loading ? 'Salvando...' : (isEditando ? 'Atualizar' : 'Criar')}
               </button>
             </div>
