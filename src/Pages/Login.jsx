@@ -46,7 +46,7 @@ function Login() {
         return
       }
 
-      // 🔥 USAR A FUNÇÃO login DO CONTEXT
+      //  USAR A FUNÇÃO login DO CONTEXT
       const { senha: _, ...userWithoutPassword } = user
       login(userWithoutPassword)
 
@@ -78,7 +78,7 @@ function Login() {
           transition={{ duration: 0.5 }}
         >
           <div className="login-icon">
-            <span style={{ fontSize: '32px' }}>🧶</span>
+            <span style={{ fontSize: '32px' }}></span>
           </div>
 
           <h1 className="login-title">Entrar</h1>

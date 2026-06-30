@@ -1,13 +1,11 @@
 // src/Pages/Contato.jsx
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { MapPin, Mail, Phone, Send, CheckCircle } from 'lucide-react'
 import { toast, Toaster } from 'sonner'
 import '../styles/Contato.css'
 
 function Contato() {
-  const navigate = useNavigate()
   const [enviado, setEnviado] = useState(false)
   const [formData, setFormData] = useState({
     nome: '',
@@ -109,12 +107,12 @@ function Contato() {
                   
                   <div className="info-item">
                     <Mail size={16} className="info-icon" />
-                    <span>julianascarabelli@hotmail.com</span>  {/* ← EMAIL ATUALIZADO */}
+                    <span>julianascarabelli@hotmail.com</span>
                   </div>
                   
                   <div className="info-item">
                     <Phone size={16} className="info-icon" />
-                    <span>(32) 99876-0489</span>  {/* ← TELEFONE ATUALIZADO */}
+                    <span>(32) 99876-0489</span>
                   </div>
                 </div>
               </div>
@@ -127,7 +125,7 @@ function Contato() {
               transition={{ duration: 0.4 }}
             >
               <CheckCircle size={48} className="sucesso-icon" />
-              <h2 className="sucesso-titulo">Mensagemkkk enviada!</h2>
+              <h2 className="sucesso-titulo">Mensagem enviada!</h2>
               <p className="sucesso-texto">
                 Obrigada pelo contato. Responderemos em breve.
               </p>

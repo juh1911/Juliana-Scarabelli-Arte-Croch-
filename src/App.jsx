@@ -20,8 +20,10 @@ import EsqueciSenha from './Pages/EsqueciSenha'
 import ResetarSenha from './Pages/ResetarSenha'
 import ConfirmarEmail from './Pages/ConfirmarEmail'
 import AdminRoute from './components/AdminRoute'
+import Perfil from './Pages/Perfil'
 import './styles/App.css'
 import './styles/Navbar.css'
+
 import './styles/Footer.css'
 
 function App() {
@@ -45,6 +47,7 @@ function App() {
           <Route path="/resetar-senha/:token" element={<ResetarSenha />} />
           <Route path="/confirmar-email/:token" element={<ConfirmarEmail />} />
           <Route path="/meus-pedidos" element={<MeusPedidos />} />
+          <Route path="/perfil" element={<Perfil />} />
           <Route 
             path="/admin" 
             element={

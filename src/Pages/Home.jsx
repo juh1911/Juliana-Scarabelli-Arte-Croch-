@@ -10,7 +10,7 @@ function Home() {
       <div className="content-left">
         <h1 className="title">
           Ju Scarabelli
-          <span className="subtitle">Arte & Crochê 🧶</span>
+          <span className="subtitle">Arte & Crochê </span>
         </h1>
         
         <div className="divider"></div>

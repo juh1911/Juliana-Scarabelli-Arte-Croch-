@@ -128,9 +128,11 @@ body.dark .filtro-btn {
   }
 }
 
-/* Card do Produto */
+/* ============================================ */
+/* CARD DO PRODUTO - OPÇÃO 1 (TRANSPARENTE) */
+/* ============================================ */
 .produto-card {
-  background: white;
+  background: transparent;
   border-radius: 1rem;
   overflow: hidden;
   text-decoration: none;
@@ -139,10 +141,12 @@ body.dark .filtro-btn {
   display: flex;
   flex-direction: column;
   height: 100%;
+  border: 1px solid rgba(232, 223, 211, 0.6);
 }
 
 body.dark .produto-card {
-  background: #16213e;
+  background: transparent;
+  border-color: rgba(42, 42, 74, 0.6);
 }
 
 .produto-card:hover {
@@ -189,12 +193,19 @@ body.dark .produto-card {
   z-index: 10;
 }
 
-/* Informações do produto */
+/* Informações do produto - COM BLUR E TRANSPARÊNCIA */
 .produto-info {
   padding: 1rem;
   flex: 1;
   display: flex;
   flex-direction: column;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(2px);
+  border-radius: 0 0 1rem 1rem;
+}
+
+body.dark .produto-info {
+  background: rgba(22, 33, 62, 0.85);
 }
 
 .produto-categoria {
@@ -202,6 +213,10 @@ body.dark .produto-card {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #6b8c5c;
+}
+
+body.dark .produto-categoria {
+  color: #7da36a;
 }
 
 .produto-nome {
@@ -322,6 +337,18 @@ body.dark .add-to-cart-btn-card {
   }
   
   .produto-preco .preco-original {
+    font-size: 0.65rem;
+  }
+  
+  .add-to-cart-btn-card {
+    padding: 0.4rem;
     font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .produtos-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }

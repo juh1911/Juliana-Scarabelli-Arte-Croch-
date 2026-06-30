@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  Menu, X, Sun, Moon, User, ShoppingBag, LogOut, Package 
+  Menu, X, Sun, Moon, User, ShoppingBag, Package 
 } from 'lucide-react'
 import { useAuth } from '../contexts/Authcontext'
 import { useCart } from '../contexts/CartContext'
@@ -12,13 +12,12 @@ import '../styles/Navbar.css'
 function Navbar() {
   const location = useLocation()
   
-  // ✅ VERIFICAÇÃO MAIS FORTE
-  if (location.pathname === '/' || location.pathname === '') {
+  if (location.pathname === '/') {
     return null
   }
 
   const navigate = useNavigate()
-  const { user, isAdmin, logout } = useAuth()
+  const { user, isAdmin } = useAuth()
   const { cartCount } = useCart()
   const [menuAberto, setMenuAberto] = useState(false)
   const [temaEscuro, setTemaEscuro] = useState(false)
@@ -32,15 +31,12 @@ function Navbar() {
     setMenuAberto(false)
   }
 
-  const handleLogout = () => {
-    logout()
-    fecharMenu()
-    navigate('/')
-  }
+  const primeiraLetra = user?.nome?.[0] || user?.email?.[0] || '?'
 
   return (
     <nav className="navbar">
       <div className="navbar-container">
+        {/* 🔥 LOGO - TEXTO "Juliana Scarabelli" */}
         <Link to="/" className="logo" onClick={fecharMenu}>
           Juliana Scarabelli
         </Link>
@@ -64,12 +60,11 @@ function Navbar() {
           </button>
 
           {user ? (
-            <div className="nav-usuario">
-              <span className="usuario-nome">{user.nome}</span>
-              <button onClick={handleLogout} className="nav-icon-btn logout-btn" title="Sair">
-                <LogOut size={14} />
-              </button>
-            </div>
+            <Link to="/perfil" className="nav-avatar-link" title={user.nome}>
+              <div className="nav-avatar">
+                {primeiraLetra.toUpperCase()}
+              </div>
+            </Link>
           ) : (
             <Link to="/login" className="nav-link entrar-link">
               <User size={14} />
@@ -111,10 +106,10 @@ function Navbar() {
               </button>
               {user ? (
                 <>
-                  <button onClick={handleLogout} className="mobile-link mobile-logout">
-                    <LogOut size={14} />
-                    <span>Sair</span>
-                  </button>
+                  <Link to="/perfil" className="mobile-link" onClick={fecharMenu}>
+                    <User size={14} />
+                    <span>Meu Perfil</span>
+                  </Link>
                   <span className="mobile-usuario">Olá, {user.nome}</span>
                 </>
               ) : (

@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Eye, EyeOff } from 'lucide-react'
 import { supabase } from '../services/supabase'
-import { sendConfirmationEmail } from '../services/emailService'
 import { toast, Toaster } from 'sonner'
 import '../styles/Cadastro.css'
 
@@ -22,7 +21,6 @@ function Cadastro() {
   const [senhaMedia, setSenhaMedia] = useState(false)
   const [senhaFraca, setSenhaFraca] = useState(false)
 
-  // Validar força da senha
   useEffect(() => {
     const forcaSenha = (senha) => {
       let forca = 0
@@ -72,22 +70,16 @@ function Cadastro() {
         return
       }
 
-      // Gerar token de confirmação
-      const confirmToken = Math.random().toString(36).substring(2, 15) + 
-                           Math.random().toString(36).substring(2, 15)
-
-      // Criar usuário com verified = false
-      const { data: newUser, error } = await supabase
+      // Criar usuário
+      const { error } = await supabase
         .from('perfis')
         .insert([{
           nome: nome,
           email: email,
           senha: senha,
           role: 'user',
-          verified: false,
-          confirm_token: confirmToken
+          verified: true
         }])
-        .select()
 
       if (error) {
         console.error('Erro no cadastro:', error)
@@ -96,15 +88,15 @@ function Cadastro() {
         return
       }
 
-      // Enviar e-mail de confirmação
-      await sendConfirmationEmail(email, nome, confirmToken)
-
-      toast.success('Conta criada! Verifique seu e-mail para confirmar o cadastro.')
+      // ✅ SUCESSO - Mensagem correta
+      toast.success('🎉 Conta criada com sucesso! Faça login para continuar.')
+      
       setLoading(false)
 
+      // Redirecionar para login após 2 segundos
       setTimeout(() => {
         navigate('/login')
-      }, 3000)
+      }, 2000)
       
     } catch (err) {
       console.error('Erro inesperado:', err)

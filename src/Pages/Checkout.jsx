@@ -9,6 +9,9 @@ import { supabase } from '../services/supabase'
 import { toast, Toaster } from 'sonner'
 import '../styles/Checkout.css'
 
+// API_URL definida AQUI mesmo (sem precisar de import)
+const API_URL = 'https://juliana-scarabelli-arte-e-croche.vercel.app/__/backend';
+
 function Checkout() {
   const navigate = useNavigate()
   const { user } = useAuth()
