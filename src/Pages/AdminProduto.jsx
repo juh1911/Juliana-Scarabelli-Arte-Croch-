@@ -96,6 +96,7 @@ function AdminProduto() {
     }
   }
 
+  // ✅ FUNÇÃO DE UPLOAD CORRIGIDA
   const handleImageUpload = async (e) => {
     const file = e.target.files[0]
     if (!file) return
@@ -123,13 +124,24 @@ function AdminProduto() {
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
       const filePath = `produtos/${fileName}`
 
+      // Verificar se o bucket existe e fazer upload
       const { error: uploadError } = await supabase.storage
         .from('produtos-imagens')
-        .upload(filePath, file)
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        })
 
       if (uploadError) {
         console.error('Erro no upload:', uploadError)
-        toast.error(`Erro ao fazer upload: ${uploadError.message}`)
+        
+        // 🔥 Se o bucket não existir, tenta criar
+        if (uploadError.message.includes('bucket not found')) {
+          toast.error('Bucket não encontrado. Verifique no Supabase.')
+        } else {
+          toast.error(`Erro ao fazer upload: ${uploadError.message}`)
+        }
+        
         setImagemPreview(null)
         setUploadando(false)
         return

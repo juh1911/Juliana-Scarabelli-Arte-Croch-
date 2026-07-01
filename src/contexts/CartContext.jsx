@@ -1,6 +1,7 @@
 // src/contexts/CartContext.jsx
 import { createContext, useContext, useState, useEffect } from 'react'
 import { toast } from 'sonner'
+import { supabase } from '../services/supabase'
 
 const CartContext = createContext({})
 
@@ -12,6 +13,7 @@ export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([])
   const [cupom, setCupom] = useState(null)
   const [descontoPercent, setDescontoPercent] = useState(0)
+  const [cupomJaUsado, setCupomJaUsado] = useState(false)
 
   // Carregar carrinho do localStorage ao iniciar
   useEffect(() => {
@@ -106,23 +108,111 @@ export function CartProvider({ children }) {
     setCartItems([])
     setCupom(null)
     setDescontoPercent(0)
+    setCupomJaUsado(false)
     localStorage.removeItem('jsc_cart')
     toast.info('Carrinho esvaziado')
   }
 
-  // Aplicar cupom de desconto
-  const applyCupom = (codigo) => {
-    const cupomValido = codigo.toUpperCase() === 'PRIMEIRA10'
-    
-    if (cupomValido) {
-      setCupom(codigo.toUpperCase())
-      setDescontoPercent(10)
-      toast.success('Cupom PRIMEIRA10 aplicado! 10% de desconto')
+  // 🔥 VERIFICAR SE O USUÁRIO JÁ USOU O CUPOM
+  const verificarCupomUsado = async (usuarioId, cupomCodigo) => {
+    try {
+      // Buscar o ID do cupom
+      const { data: cupomData, error: cupomError } = await supabase
+        .from('cupons')
+        .select('id')
+        .eq('codigo', cupomCodigo)
+        .single()
+
+      if (cupomError || !cupomData) {
+        console.error('Erro ao buscar cupom:', cupomError)
+        return false
+      }
+
+      // Verificar se o usuário já usou este cupom
+      const { data: usoData, error: usoError } = await supabase
+        .from('cupons_uso')
+        .select('id')
+        .eq('usuario_id', usuarioId)
+        .eq('cupom_id', cupomData.id)
+        .single()
+
+      if (usoError && usoError.code !== 'PGRST116') {
+        console.error('Erro ao verificar uso do cupom:', usoError)
+        return false
+      }
+
+      return !!usoData
+    } catch (error) {
+      console.error('Erro ao verificar cupom:', error)
+      return false
+    }
+  }
+
+  // 🔥 REGISTRAR USO DO CUPOM
+  const registrarUsoCupom = async (usuarioId, cupomCodigo) => {
+    try {
+      const { data: cupomData } = await supabase
+        .from('cupons')
+        .select('id')
+        .eq('codigo', cupomCodigo)
+        .single()
+
+      if (!cupomData) return false
+
+      const { error } = await supabase
+        .from('cupons_uso')
+        .insert([
+          { usuario_id: usuarioId, cupom_id: cupomData.id, usado: true }
+        ])
+
+      if (error) {
+        console.error('Erro ao registrar uso do cupom:', error)
+        return false
+      }
+
       return true
-    } else {
+    } catch (error) {
+      console.error('Erro ao registrar cupom:', error)
+      return false
+    }
+  }
+
+  // 🔥 APLICAR CUPOM (com verificação de uso único)
+  const applyCupom = async (codigo, usuarioId) => {
+    const codigoUpper = codigo.toUpperCase()
+    const cupomValido = codigoUpper === 'PRIMEIRA10'
+    
+    if (!cupomValido) {
       toast.error('Cupom inválido')
       return false
     }
+
+    // Se o usuário está logado, verificar se já usou o cupom
+    if (usuarioId) {
+      const jaUsou = await verificarCupomUsado(usuarioId, codigoUpper)
+      if (jaUsou) {
+        toast.error('Você já utilizou este cupom!')
+        return false
+      }
+    }
+
+    setCupom(codigoUpper)
+    setDescontoPercent(10)
+    setCupomJaUsado(false)
+    toast.success('Cupom PRIMEIRA10 aplicado! 10% de desconto')
+    return true
+  }
+
+  // 🔥 MARCAR CUPOM COMO USADO (chamar no checkout após finalizar pedido)
+  const marcarCupomComoUsado = async (usuarioId) => {
+    if (!cupom || !usuarioId) return false
+    
+    const result = await registrarUsoCupom(usuarioId, cupom)
+    if (result) {
+      setCupomJaUsado(true)
+      toast.info('Cupom registrado com sucesso!')
+    }
+    return result
   }
 
   // Remover cupom
@@ -132,7 +222,7 @@ export function CartProvider({ children }) {
     toast.info('Cupom removido')
   }
 
-  // Calcular subtotal (soma de todos os itens)
+  // Calcular subtotal
   const subtotal = cartItems.reduce(
     (sum, item) => sum + (item.preco * item.quantidade),
     0
@@ -156,12 +246,14 @@ export function CartProvider({ children }) {
       total,
       descontoPercent,
       cupom,
+      cupomJaUsado,
       addItem,
       removeItem,
       updateQuantity,
       clearCart,
       applyCupom,
-      removeCupom
+      removeCupom,
+      marcarCupomComoUsado
     }}>
       {children}
     </CartContext.Provider>

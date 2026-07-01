@@ -36,6 +36,155 @@ body {
 
   z-index: 1;
 }
+/* src/styles/Home.css */
+
+.home-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #FAF8F5;
+}
+
+/* Conteúdo sobreposto ao carrossel */
+.home-overlay-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: 100%;
+  max-width: 600px;
+  padding: 0 2rem;
+}
+
+.content-left {
+  text-align: center;
+  color: white;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+}
+
+.title {
+  font-size: 3.5rem;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 0.2rem;
+}
+
+.subtitle {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 0;
+  letter-spacing: 1px;
+}
+
+.divider {
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, #6b9e5a, #ffffff);
+  margin: 1.5rem auto;
+  border-radius: 3px;
+}
+
+.tagline {
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.description {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 2rem;
+  font-weight: 400;
+}
+
+.shop-button {
+  background: #6b8c5c;
+  color: white;
+  border: none;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.shop-button:hover {
+  background: #5a7a4a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.arrow {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.shop-button:hover .arrow {
+  transform: translateX(5px);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.5rem;
+  }
+  
+  .subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .tagline {
+    font-size: 1.4rem;
+  }
+  
+  .description {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .shop-button {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+  }
+}
+/* src/styles/Home.css */
+
+.home-container {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #FAF8F5;
+}
+
+/* Remove tudo relacionado ao conteúdo sobreposto */
+/* .home-overlay-content, .content-left, .title, .subtitle, .divider, .tagline, .description, .shop-button */
+/* Tudo foi removido porque agora só tem o carrossel */
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.8rem;
+  }
+  
+  .tagline {
+    font-size: 1.2rem;
+  }
+  
+  .description br {
+    display: none;
+  }
+}
 
 /* Conteúdo fica por cima da camada */
 .content-left {

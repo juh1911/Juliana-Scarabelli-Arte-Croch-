@@ -2,15 +2,12 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { QrCode, CreditCard, FileText, Search, Tag } from 'lucide-react'
+import { Search, Tag } from 'lucide-react'
 import { useCart } from '../contexts/CartContext'
 import { useAuth } from '../contexts/Authcontext'
 import { supabase } from '../services/supabase'
 import { toast, Toaster } from 'sonner'
 import '../styles/Checkout.css'
-
-// API_URL definida AQUI mesmo (sem precisar de import)
-const API_URL = 'https://juliana-scarabelli-arte-e-croche.vercel.app/__/backend';
 
 function Checkout() {
   const navigate = useNavigate()
@@ -23,12 +20,11 @@ function Checkout() {
     cupom, 
     applyCupom, 
     removeCupom,
-    clearCart
+    clearCart,
+    marcarCupomComoUsado
   } = useCart()
   
   const [processing, setProcessing] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState('pix')
-  const [parcelas, setParcelas] = useState(1)
   const [buscandoCep, setBuscandoCep] = useState(false)
   const [codigoCupom, setCodigoCupom] = useState('')
   const [cupomStatus, setCupomStatus] = useState(null)
@@ -127,8 +123,9 @@ function Checkout() {
     }
   }
 
-  const handleApplyCupom = () => {
-    if (applyCupom(codigoCupom)) {
+  const handleApplyCupom = async () => {
+    const result = await applyCupom(codigoCupom, user?.id)
+    if (result) {
       setCupomStatus('success')
       setCodigoCupom('')
     } else {
@@ -139,33 +136,6 @@ function Checkout() {
   const gerarNumeroPedido = () => {
     return `JSC${Date.now()}${Math.floor(Math.random() * 1000)}`
   }
-
-  const enviarEmailConfirmacao = async (email, nome, numeroPedido, total, itens, paymentMethod) => {
-    try {
-      const response = await fetch(`${API_URL}/api/send-order-confirmation`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          nome,
-          pedido: {
-            numero_pedido: numeroPedido,
-            total: total,
-            itens: itens.map(item => ({
-              nome: item.nome,
-              quantidade: item.quantidade,
-              preco: item.preco
-            })),
-            forma_pagamento: paymentMethod
-          }
-        })
-      });
-      const result = await response.json();
-      console.log('E-mail enviado:', result);
-    } catch (error) {
-      console.error('Erro ao enviar e-mail:', error);
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -230,8 +200,8 @@ function Checkout() {
         desconto: desconto,
         total: total,
         cupom: cupom || null,
-        forma_pagamento: paymentMethod,
-        parcelas: paymentMethod === 'cartao' ? parcelas : 1,
+        forma_pagamento: 'aguardando_pagamento',
+        parcelas: 1,
         status: 'preparando'
       }
       
@@ -246,15 +216,10 @@ function Checkout() {
         return
       }
       
-      // Enviar e-mail de confirmação
-      await enviarEmailConfirmacao(
-        formData.email,
-        formData.nome,
-        numeroPedido,
-        total,
-        cartItems,
-        paymentMethod
-      );
+      // Marcar cupom como usado
+      if (cupom && user?.id) {
+        await marcarCupomComoUsado(user.id)
+      }
       
       clearCart()
       toast.success(`Pedido realizado com sucesso! Número: ${numeroPedido}`)
@@ -434,37 +399,7 @@ function Checkout() {
                   <button type="button" onClick={removeCupom} className="cupom-remove">✕</button>
                 </div>
               )}
-              {cupomStatus === 'error' && <p className="cupom-error">Cupom inválido. Tente PRIMEIRA10</p>}
-            </div>
-
-            {/* FORMA DE PAGAMENTO */}
-            <div className="checkout-card">
-              <h2 className="card-label">FORMA DE PAGAMENTO</h2>
-              <div className="payment-methods">
-                <button 
-                  type="button" 
-                  className={`payment-btn ${paymentMethod === 'pix' ? 'active' : ''}`} 
-                  onClick={() => setPaymentMethod('pix')}
-                >
-                  <QrCode size={20} /> PIX
-                </button>
-                <button 
-                  type="button" 
-                  className={`payment-btn ${paymentMethod === 'cartao' ? 'active' : ''}`} 
-                  onClick={() => setPaymentMethod('cartao')}
-                >
-                  <CreditCard size={20} /> Cartão
-                </button>
-                <button 
-                  type="button" 
-                  className={`payment-btn ${paymentMethod === 'boleto' ? 'active' : ''}`} 
-                  onClick={() => setPaymentMethod('boleto')}
-                >
-                  <FileText size={20} /> Boleto
-                </button>
-              </div>
-              {paymentMethod === 'pix' && <p className="payment-message">Você receberá o QR Code após confirmar o pedido.</p>}
-              {paymentMethod === 'boleto' && <p className="payment-message">O boleto será enviado para seu e-mail.</p>}
+              {cupomStatus === 'error' && <p className="cupom-error">Cupom inválido ou já utilizado</p>}
             </div>
 
             {/* RESUMO DO PEDIDO */}

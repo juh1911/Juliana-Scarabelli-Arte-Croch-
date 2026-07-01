@@ -21,19 +21,202 @@ body {
   overflow-x: hidden;
 }
 
+/* ============================================ */
+/* 🔥 MODO ESCURO CORRETO (PRETO, SEM AZUL) */
+/* ============================================ */
 body.dark {
-  background: #1a1512;
+  background: #0d0d0d;  /* PRETO */
   color: #e8dfd3;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
+body.dark .home-container,
+body.dark .loja-page,
+body.dark .produto-page,
+body.dark .carrinho-page,
+body.dark .checkout-page,
+body.dark .sobre-container,
+body.dark .contato-container,
+body.dark .meus-pedidos-page,
+body.dark .admin-page,
+body.dark .perfil-page,
+body.dark .loja-container {
+  background: #0d0d0d;
 }
 
-/* ============================================ */
-/* SCROLLBAR - Melhor para mobile */
-/* ============================================ */
+body.dark .produto-card,
+body.dark .pedido-card,
+body.dark .checkout-card,
+body.dark .carrinho-item,
+body.dark .perfil-card,
+body.dark .stat-card,
+body.dark .table-container {
+  background: #1a1a1a;
+  border-color: #2a2a2a;
+}
+
+body.dark .produto-info {
+  background: rgba(26, 26, 26, 0.95);
+}
+
+body.dark .navbar {
+  background: rgba(13, 13, 13, 0.95);
+  border-bottom-color: #2a2a2a;
+}
+
+body.dark .footer {
+  background: #141414;
+  border-top-color: #2a2a2a;
+}
+
+body.dark .filtro-btn {
+  border-color: #2a2a2a;
+  color: #b9a88c;
+}
+
+body.dark .filtro-btn.active {
+  background: #6b8c5c;
+  color: white;
+}
+
+body.dark .back-button {
+  color: #8db87a;
+}
+
+body.dark .back-button:hover {
+  color: #7da36a;
+}
+
+body.dark .login-card,
+body.dark .cadastro-card,
+body.dark .esqueci-card,
+body.dark .resetar-card,
+body.dark .confirmado-card {
+  background: #1a1a1a;
+  border-color: #2a2a2a;
+}
+
+body.dark .form-input,
+body.dark .form-select,
+body.dark .form-textarea {
+  border-bottom-color: #2a2a2a;
+  color: #e8dfd3;
+}
+
+body.dark .form-input:focus,
+body.dark .form-select:focus,
+body.dark .form-textarea:focus {
+  border-bottom-color: #6b8c5c;
+}
+
+body.dark .image-upload-area {
+  background: #1a1a1a;
+}
+
+body.dark .perfil-bio {
+  background: #1a1a1a;
+  color: #e8dfd3;
+  border-left-color: #6b8c5c;
+}
+
+body.dark .perfil-estatisticas {
+  background: #1a1a1a;
+}
+
+body.dark .perfil-acao {
+  background: #1a1a1a;
+  border-color: #2a2a2a;
+  color: #e8dfd3;
+}
+
+body.dark .perfil-acao:hover {
+  background: #2a2a2a;
+}
+
+body.dark .perfil-editar-btn {
+  color: #8db87a;
+  border-color: #8db87a;
+}
+
+body.dark .perfil-editar-btn:hover {
+  background: #8db87a;
+  color: #0d0d0d;
+}
+
+/* Scrollbar no modo escuro */
+body.dark ::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+body.dark ::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+}
+
+body.dark ::-webkit-scrollbar-thumb:hover {
+  background: #6b8c5c;
+}
+
+/* Inputs e textareas no modo escuro */
+body.dark input,
+body.dark textarea,
+body.dark select {
+  background: transparent;
+  color: #e8dfd3;
+}
+
+body.dark input::placeholder,
+body.dark textarea::placeholder {
+  color: #666;
+}
+
+/* Links no modo escuro */
+body.dark a {
+  color: #8db87a;
+}
+
+body.dark a:hover {
+  color: #7da36a;
+}
+
+/* Botões no modo escuro */
+body.dark .shop-button,
+body.dark .add-to-cart-btn,
+body.dark .checkout-btn,
+body.dark .confirmar-btn,
+body.dark .login-btn,
+body.dark .cadastro-btn,
+body.dark .save-btn {
+  background: #6b8c5c;
+}
+
+body.dark .shop-button:hover,
+body.dark .add-to-cart-btn:hover,
+body.dark .checkout-btn:hover,
+body.dark .confirmar-btn:hover,
+body.dark .login-btn:hover,
+body.dark .cadastro-btn:hover,
+body.dark .save-btn:hover {
+  background: #5a7a4a;
+}
+
+/* Badges no modo escuro */
+body.dark .promo-badge {
+  background: #c0392b;
+}
+
+body.dark .estoque-baixo {
+  color: #e74c3c;
+}
+
+/* Separadores no modo escuro */
+body.dark .separator-line {
+  background: #2a2a2a;
+}
+
+body.dark .resumo-divider {
+  background: #2a2a2a;
+}
+
+/* Scrollbar padrão */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -49,19 +232,18 @@ a {
   border-radius: 4px;
 }
 
-body.dark ::-webkit-scrollbar-track {
-  background: #3d352e;
+::-webkit-scrollbar-thumb:hover {
+  background: #5a7a4a;
 }
 
-body.dark ::-webkit-scrollbar-thumb {
-  background: #7da36a;
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
 /* ============================================ */
-/* MOBILE FIRST - Ajustes para celular */
+/* MOBILE FIRST */
 /* ============================================ */
-
-/* Ajuste geral para telas pequenas */
 @media (max-width: 768px) {
   html {
     font-size: 14px;
@@ -72,7 +254,6 @@ body.dark ::-webkit-scrollbar-thumb {
     overflow-x: hidden;
   }
 
-  /* Melhorar toque em botões */
   button,
   .btn,
   .filtro-btn,
@@ -83,29 +264,25 @@ body.dark ::-webkit-scrollbar-thumb {
     touch-action: manipulation;
   }
 
-  /* Ajuste de inputs */
   input,
   select,
   textarea {
-    font-size: 16px !important; /* Evita zoom no iOS */
+    font-size: 16px !important;
     -webkit-appearance: none;
     appearance: none;
   }
 
-  /* Melhorar scroll suave */
   .filtros {
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
   }
 
-  /* Cards com toque melhor */
   .produto-card,
   .pedido-card,
   .checkout-card {
     touch-action: manipulation;
   }
 
-  /* Ajuste de padding geral */
   .home-container,
   .loja-page,
   .produto-page,
@@ -119,7 +296,6 @@ body.dark ::-webkit-scrollbar-thumb {
     padding: 1rem;
   }
 
-  /* Títulos menores */
   .loja-title,
   .carrinho-title,
   .checkout-title,
@@ -130,9 +306,6 @@ body.dark ::-webkit-scrollbar-thumb {
   }
 }
 
-/* ============================================ */
-/* TELAS MUITO PEQUENAS (até 480px) */
-/* ============================================ */
 @media (max-width: 480px) {
   html {
     font-size: 13px;
@@ -151,7 +324,6 @@ body.dark ::-webkit-scrollbar-thumb {
     padding: 0.75rem;
   }
 
-  /* Ajuste de fontes */
   h1 {
     font-size: 1.4rem !important;
   }
@@ -168,7 +340,6 @@ body.dark ::-webkit-scrollbar-thumb {
     font-size: 0.9rem !important;
   }
 
-  /* Botões ocupam largura total */
   .btn,
   button[type="submit"],
   .add-to-cart-btn,
@@ -182,13 +353,11 @@ body.dark ::-webkit-scrollbar-thumb {
     justify-content: center !important;
   }
 
-  /* Cards em 1 coluna */
   .produtos-grid {
     grid-template-columns: 1fr !important;
     gap: 0.75rem !important;
   }
 
-  /* Carrinho mais compacto */
   .carrinho-item {
     flex-wrap: wrap !important;
     padding: 0.75rem !important;
@@ -203,7 +372,6 @@ body.dark ::-webkit-scrollbar-thumb {
     font-size: 0.8rem !important;
   }
 
-  /* Navbar mais compacto */
   .navbar {
     height: 56px !important;
   }
@@ -223,7 +391,6 @@ body.dark ::-webkit-scrollbar-thumb {
     font-size: 0.7rem !important;
   }
 
-  /* Checkout mais compacto */
   .checkout-card {
     padding: 0.75rem !important;
   }
@@ -237,7 +404,6 @@ body.dark ::-webkit-scrollbar-thumb {
     grid-column: span 1 !important;
   }
 
-  /* Menos padding nos cards */
   .produto-info {
     padding: 0.75rem !important;
   }
@@ -246,7 +412,6 @@ body.dark ::-webkit-scrollbar-thumb {
     padding: 0.75rem !important;
   }
 
-  /* Filtros com rolagem */
   .filtros {
     gap: 0.4rem !important;
     padding-bottom: 0.5rem !important;
@@ -257,7 +422,6 @@ body.dark ::-webkit-scrollbar-thumb {
     font-size: 0.7rem !important;
   }
 
-  /* Modal mais compacto */
   .perfil-modal {
     padding: 1rem !important;
     margin: 0.5rem !important;
@@ -267,7 +431,6 @@ body.dark ::-webkit-scrollbar-thumb {
     gap: 0.75rem !important;
   }
 
-  /* Estatísticas do perfil em coluna */
   .perfil-estatisticas {
     flex-direction: column !important;
     gap: 0.75rem !important;
@@ -306,7 +469,6 @@ body.dark ::-webkit-scrollbar-thumb {
     gap: 0.5rem !important;
   }
 
-  /* Home */
   .home-container {
     padding: 1rem !important;
   }
@@ -332,9 +494,6 @@ body.dark ::-webkit-scrollbar-thumb {
   }
 }
 
-/* ============================================ */
-/* TABLETS (481px a 768px) */
-/* ============================================ */
 @media (min-width: 481px) and (max-width: 768px) {
   .produtos-grid {
     grid-template-columns: repeat(2, 1fr) !important;
@@ -354,9 +513,6 @@ body.dark ::-webkit-scrollbar-thumb {
   }
 }
 
-/* ============================================ */
-/* PREVENIR ZOOM EM INPUTS NO iOS */
-/* ============================================ */
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   select,
   textarea,
@@ -365,9 +521,6 @@ body.dark ::-webkit-scrollbar-thumb {
   }
 }
 
-/* ============================================ */
-/* MELHORAR TOQUE EM LINKS E BOTÕES */
-/* ============================================ */
 @media (hover: none) and (pointer: coarse) {
   a,
   button,
@@ -376,9 +529,6 @@ body.dark ::-webkit-scrollbar-thumb {
   }
 }
 
-/* ============================================ */
-/* SCROLLBAR PARA MOBILE (mais fina) */
-/* ============================================ */
 @media (max-width: 768px) {
   ::-webkit-scrollbar {
     width: 4px;

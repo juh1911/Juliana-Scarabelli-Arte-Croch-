@@ -1,5 +1,5 @@
 // src/App.jsx
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { Toaster } from 'sonner'
 import Navbar from './components/Navbar'
 import Footer from './Pages/Footer'
@@ -19,18 +19,20 @@ import MeusPedidos from './Pages/MeusPedidos'
 import EsqueciSenha from './Pages/EsqueciSenha'
 import ResetarSenha from './Pages/ResetarSenha'
 import ConfirmarEmail from './Pages/ConfirmarEmail'
-import AdminRoute from './components/AdminRoute'
 import Perfil from './Pages/Perfil'
+import AdminRoute from './components/AdminRoute'
 import './styles/App.css'
 import './styles/Navbar.css'
-
 import './styles/Footer.css'
 
 function App() {
+  const location = useLocation()
+  const isHome = location.pathname === '/'
+
   return (
     <div className="app-wrapper">
       <Toaster position="top-right" richColors />
-      <Navbar />  {/* ← O PRÓPRIO NAVBAR DECIDE SE DEVE APARECER */}
+      {!isHome && <Navbar />}
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -66,7 +68,8 @@ function App() {
           />
         </Routes>
       </main>
-      <Footer />
+      {/* ✅ Footer NÃO aparece na Home */}
+      {!isHome && <Footer />}
     </div>
   )
 }
